@@ -2,9 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
-<title th:text="${título}"></title>
+<title th:text="${title}"></title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 </head>
 <body>
-<h1 th:text="${título}"></h1>
+<h1 class="smart-red" th:text="${title}"></h1>
+<h2 class="lazy-blue">Decorating with styles CSS</h2>
+    <img class="secret-black" th:src="@{/images/TecNM2021.png}" alt="TecNM Logo">
 </body>
 </html>
