@@ -1,6 +1,10 @@
 package com.ideapool.springboot.form.app.controllers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
+import com.ideapool.springboot.form.app.editors.CapitalizedNameEditor;
 import com.ideapool.springboot.form.app.models.domain.User;
 import com.ideapool.springboot.form.app.validation.UserValidator;
 
@@ -26,6 +31,13 @@ public class FormController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class, "birthdate", new CustomDateEditor(dateFormat, false));
+		
+		binder.registerCustomEditor(String.class, "name", new CapitalizedNameEditor());
+		binder.registerCustomEditor(String.class, "lastName", new CapitalizedNameEditor());
 	}
 	
 	@GetMapping("/form")

@@ -1,31 +1,52 @@
 package com.ideapool.springboot.form.app.models.domain;
 
+import java.util.Date;
+
+//import org.springframework.format.annotation.DateTimeFormat;
+
+import com.ideapool.springboot.form.app.validation.IdentifierRegex;
+import com.ideapool.springboot.form.app.validation.Required;
+
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
 public class User {
 
-	//@Pattern(regexp = "[\\d]{2}[.][\\d]{3}[.][\\d]{3}[-][A-Z]{1}")
+	@IdentifierRegex
 	private String identifier;
 	
 	//@NotEmpty(message = "The name cant be a empty name")
 	private String name;
 	
-	@NotEmpty(message = "The last name cant be a empty name")
+	@Required
 	private String lastName;
 
 	@NotBlank
 	@Size(min = 3, max = 8)
 	private String username;
 	
-	@NotEmpty
+	@Required
 	@Email
 	private String email;
 	
 	@NotEmpty(message = "The password cant be a empty name")
 	private String password;
+
+	@NotNull
+	@Min(5)
+	@Max(5000)
+	private Integer account;
+
+	@NotNull
+	@Past
+	//@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date birthdate;
 	
 	public String getIdentifier() {
 		return identifier;
@@ -75,4 +96,19 @@ public class User {
 		this.password = password;
 	}
 
+	public Integer getAccount() {
+		return account;
+	}
+
+	public void setAccount(Integer account) {
+		this.account = account;
+	}
+
+	public Date getBirthdate() {
+		return birthdate;
+	}
+
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
+	}
 }

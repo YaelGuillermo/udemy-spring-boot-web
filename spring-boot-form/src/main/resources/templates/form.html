@@ -43,6 +43,20 @@
             <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
         </div>
         <div>
+            <label for="account">Account</label>
+            <div>
+                <input type="number" id="account" th:field="*{account}">
+            </div>
+            <div th:if="${#fields.hasErrors('account')}" th:errors="*{account}"></div>
+        </div>
+        <div>
+            <label for="birthdate">Birth date</label>
+            <div>
+                <input type="date" id="birthdate" th:field="*{birthdate}">
+            </div>
+            <div th:if="${#fields.hasErrors('birthdate')}" th:errors="*{birthdate}" placeholder="yyyy-MM-dd"></div>
+        </div>
+        <div>
             <label for="password">Password</label>
             <div>
                 <input type="password" id="password" th:field="*{password}">

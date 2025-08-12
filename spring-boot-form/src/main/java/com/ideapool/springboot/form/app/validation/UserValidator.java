@@ -19,13 +19,13 @@ public class UserValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		
-		User user = (User)target;
+		//User user = (User)target;
 		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "required.user.name");
 		
-		if (!user.getIdentifier().matches("[\\d]{2}[.][\\d]{3}[.][\\d]{3}[-][A-Z]{1}")) {
+		/*if (!user.getIdentifier().matches("[\\d]{2}[.][\\d]{3}[.][\\d]{3}[-][A-Z]{1}")) {
 			errors.rejectValue("identifier", "pattern.user.identifier");
-		}
+		}*/
 	}
 
 }
