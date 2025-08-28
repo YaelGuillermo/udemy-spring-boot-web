@@ -13,8 +13,14 @@
 		<li th:text="${user.username}"></li>
 		<li th:text="${user.email}"></li>
 		<li th:text="${user.account}"></li>	
-		<li th:text="${user.birthdate}"></li>	
-		<li th:text="${user.password}"></li>
+		<li th:text="${#calendars.format(user.birthdate, 'dd-MM-yyyy')}"></li>		
+		<li th:text="${user.country.id}"></li>	
+		<li th:text="${user.country.code}"></li>
+		<li th:text="${user.country.name}"></li>		
 	</ul>
+<div>Roles</div>
+<ul>
+    <li th:each="role : ${user.roles}" th:text="${role}"></li>		
+</ul>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.ideapool.springboot.form.app.models.domain;
 
 import java.util.Date;
+import java.util.List;
 
 //import org.springframework.format.annotation.DateTimeFormat;
 
@@ -47,6 +48,12 @@ public class User {
 	@Past
 	//@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date birthdate;
+	
+	@NotNull
+	private Country country;
+	
+	@NotEmpty
+	private List<String> roles;
 	
 	public String getIdentifier() {
 		return identifier;
@@ -111,4 +118,21 @@ public class User {
 	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
 	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
+	
 }

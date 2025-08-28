@@ -7,6 +7,24 @@
 <body>
     <h3 th:text="${title}"></h3>
     <form th:action="@{/form}" th:object="${user}" method="post">
+	    <div>
+            <label for="country">Country</label>
+            <div>
+                <select id="country" th:field="*{country}">
+                	<option value="">Select country</option>
+                	<option th:each="country: ${countryList}" th:text="${country.name}" th:value="${country.id}"></option>
+                </select>
+            </div>
+            <div th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></div>
+        </div>
+        <div>
+            <label>Roles</label>
+            <div th:each="role: ${rolesList}">
+                <input type="checkbox" th:field="*{roles}" th:value="${role}">
+                <label th:text="${role}" th:for="${#ids.prev('roles')}"></label>
+            </div>
+            <div th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></div>
+        </div>
         <div>
             <label for="identifier">Identifier</label>
             <div>
