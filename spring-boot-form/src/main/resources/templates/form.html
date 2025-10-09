@@ -8,6 +8,12 @@
     <h3 th:text="${title}"></h3>
     <form th:action="@{/form}" th:object="${user}" method="post">
 	    <div>
+            <label for="isActive">Is Active</label>
+            <div>
+                <input type="checkbox" id="isActive" th:field="*{isActive}">
+            </div>
+        </div>
+	    <div>
             <label for="country">Country</label>
             <div>
                 <select id="country" th:field="*{country}">
@@ -19,9 +25,9 @@
         </div>
         <div>
             <label>Roles</label>
-            <div th:each="role: ${rolesList}">
-                <input type="checkbox" th:field="*{roles}" th:value="${role}">
-                <label th:text="${role}" th:for="${#ids.prev('roles')}"></label>
+            <div th:each="role: ${roleList}">
+                <input type="checkbox" th:field="*{roles}" th:value="${role.id}">
+                <label th:text="${role.name}" th:for="${#ids.prev('roles')}"></label>
             </div>
             <div th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></div>
         </div>

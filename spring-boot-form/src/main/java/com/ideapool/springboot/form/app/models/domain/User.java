@@ -53,7 +53,9 @@ public class User {
 	private Country country;
 	
 	@NotEmpty
-	private List<String> roles;
+	private List<Role> roles;
+	
+	private Boolean isActive;
 	
 	public String getIdentifier() {
 		return identifier;
@@ -127,12 +129,19 @@ public class User {
 		this.country = country;
 	}
 
-	public List<String> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<String> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
-	
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 }

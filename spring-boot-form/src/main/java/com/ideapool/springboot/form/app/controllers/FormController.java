@@ -23,9 +23,12 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.ideapool.springboot.form.app.editors.CapitalizedNameEditor;
 import com.ideapool.springboot.form.app.editors.CountryPropertyEditor;
+import com.ideapool.springboot.form.app.editors.RolePropertyEditor;
 import com.ideapool.springboot.form.app.models.domain.Country;
+import com.ideapool.springboot.form.app.models.domain.Role;
 import com.ideapool.springboot.form.app.models.domain.User;
 import com.ideapool.springboot.form.app.services.CountryService;
+import com.ideapool.springboot.form.app.services.RoleService;
 import com.ideapool.springboot.form.app.validation.UserValidator;
 
 import jakarta.validation.Valid;
@@ -41,7 +44,13 @@ public class FormController {
 	private CountryService countryService;
 	
 	@Autowired
+	private RoleService roleService;
+	
+	@Autowired
 	private CountryPropertyEditor countryEditor;
+	
+	@Autowired
+	private RolePropertyEditor roleEditor;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -55,6 +64,12 @@ public class FormController {
 		binder.registerCustomEditor(String.class, "lastName", new CapitalizedNameEditor());
 		
 		binder.registerCustomEditor(Country.class, "country", countryEditor);
+		binder.registerCustomEditor(Role.class, "roles", roleEditor);
+	}
+	
+	@ModelAttribute("roleList")
+	public List<Role> roleList() {
+		return roleService.list();
 	}
 	
 	@ModelAttribute("countryList")
@@ -68,6 +83,15 @@ public class FormController {
 		roles.add("ROLE_ADMIN");
 		roles.add("ROLE_USER");
 		roles.add("ROLE_MODERATOR");
+		return roles;
+	}
+	
+	@ModelAttribute("rolesListMap")
+	public Map<String, String> rolesListMap() {
+		Map<String, String> roles = new HashMap<String, String>();
+		roles.put("ROLE_ADMIN", "Administrator");
+		roles.put("ROLE_USER", "User");
+		roles.put("ROLE_MODERATOR", "Moderator");
 		return roles;
 	}
 	
@@ -92,6 +116,7 @@ public class FormController {
 		user.setName("Jhon");
 		user.setLastName("Doe");
 		user.setIdentifier("123.456.789-K");
+		user.setIsActive(true);
 		
 		model.addAttribute("title", "User form");
 		model.addAttribute("user", user);

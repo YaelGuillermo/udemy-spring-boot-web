@@ -16,11 +16,12 @@
 		<li th:text="${#calendars.format(user.birthdate, 'dd-MM-yyyy')}"></li>		
 		<li th:text="${user.country.id}"></li>	
 		<li th:text="${user.country.code}"></li>
-		<li th:text="${user.country.name}"></li>		
+		<li th:text="${user.country.name}"></li>
+		<li th:text="'Active: '+ ${user.isActive}"></li>		
 	</ul>
 <div>Roles</div>
 <ul>
-    <li th:each="role : ${user.roles}" th:text="${role}"></li>		
+    <li th:each="role: ${user.roles}" th:text="${role.id} + ': ' + ${role.name} + ' => ' + ${role.role}"></li>		
 </ul>
 </body>
 </html>
