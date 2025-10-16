@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -65,6 +66,11 @@ public class FormController {
 		
 		binder.registerCustomEditor(Country.class, "country", countryEditor);
 		binder.registerCustomEditor(Role.class, "roles", roleEditor);
+	}
+	
+	@ModelAttribute("genre")
+	public List<String> genre(){
+		return Arrays.asList("Man", "Woman");
 	}
 	
 	@ModelAttribute("roleList")
@@ -117,6 +123,12 @@ public class FormController {
 		user.setLastName("Doe");
 		user.setIdentifier("123.456.789-K");
 		user.setIsActive(true);
+		user.setSecretValue("my secret value");
+		user.setCountry(new Country(2, "ME", "Mexico"));
+		user.setRoles(Arrays.asList(
+				new Role(2, "User", "ROLE_USER"),
+				new Role(3, "Moderator", "ROLE_MODERATOR"))
+		);
 		
 		model.addAttribute("title", "User form");
 		model.addAttribute("user", user);
@@ -125,19 +137,28 @@ public class FormController {
 	}
 	
 	@PostMapping("/form")
-	public String create(@Valid User user, BindingResult result, Model model, SessionStatus status) {
-		model.addAttribute("title", "Result form");
-		
+	public String create(@Valid User user, BindingResult result, Model model) {		
 		if(result.hasErrors()) {
 			/*Map<String, String> errors = new HashMap<>();
 			result.getFieldErrors().forEach(err ->{
 				errors.put(err.getField(), "The field ".concat(err.getField()).concat(" ").concat(err.getDefaultMessage()));
 			});
 			model.addAttribute("error", errors);*/
+			model.addAttribute("title", "Result form");
 			return "form";
 		}
 		
+		return "redirect:/view";
+	}
+	
+	@GetMapping("/view")
+	public String view(@SessionAttribute(name = "user", required = false) User user, Model model, SessionStatus status) {
+		if (user == null) {
+			return "redirect:/form";
+		}
+		model.addAttribute("title", "Result form");
 		model.addAttribute("user", user);
+		
 		status.setComplete();
 		return "result";
 	}

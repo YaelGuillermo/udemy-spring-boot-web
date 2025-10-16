@@ -57,6 +57,11 @@ public class User {
 	
 	private Boolean isActive;
 	
+	@NotEmpty
+	private String genre;
+	
+	private String secretValue;
+	
 	public String getIdentifier() {
 		return identifier;
 	}
@@ -143,5 +148,21 @@ public class User {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+	
+	public String getSecretValue() {
+		return secretValue;
+	}
+
+	public void setSecretValue(String secretValue) {
+		this.secretValue = secretValue;
 	}
 }
