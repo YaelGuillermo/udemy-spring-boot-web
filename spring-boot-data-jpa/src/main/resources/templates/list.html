@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(pageTitle=${title}, content=~{::section})}">
+<head></head>
+<body>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold text-primary"><i class="bi bi-people"></i> <span th:text="${title}">List of clients</span></h1>
+            <p class="text-muted">Manage your client database efficiently</p>
+        </div>
+        <a th:href="@{/form}" class="btn btn-success btn-lg px-4 shadow">
+            <i class="bi bi-plus-circle"></i> New Client
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white py-3">
+            <h2 class="h5 mb-0"><i class="bi bi-list-ul"></i> Client Records</h2>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-4 py-3">ID</th>
+                            <th class="px-4 py-3">Name</th>
+                            <th class="px-4 py-3">Last Name</th>
+                            <th class="px-4 py-3">Email</th>
+                            <th class="px-4 py-3">Registered</th>
+                            <th class="px-4 py-3">Update</th>
+                            <th class="px-4 py-3">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="client, iterStat : ${clients}" 
+                            th:classappend="${iterStat.even} ? 'bg-light'">
+                            <td class="px-4 py-3 fw-bold text-primary" th:text="${client.id}"></td>
+                            <td class="px-4 py-3" th:text="${client.name}"></td>
+                            <td class="px-4 py-3" th:text="${client.lastName}"></td>
+                            <td class="px-4 py-3" th:text="${client.email}"></td>
+                            <td class="px-4 py-3" th:text="${client.createdAt}"></td>
+                            <td class="px-4 py-3">
+                            	<a class="btn btn-primary btn-xs" th:href="@{/form/} + ${client.id}" th:text="'Update'">
+                            	</a>
+                            </td>
+                            <td class="px-4 py-3">
+                            	<a class="btn btn-danger btn-xs" th:href="@{/delete/} + ${client.id}" th:text="'Delete'" onclick="return confirm('Are you sure you want to delete?');">
+                            	</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <nav th:replace="paginator-nav :: paginator"></nav>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

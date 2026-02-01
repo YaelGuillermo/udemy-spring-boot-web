@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(pageTitle=${title}, content=~{::section})}">
+<head></head>
+<body>
+<section>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header py-4">
+                    <h1 class="h3 mb-0 fw-bold"><i class="bi bi-person-plus"></i> <span th:text="${title}">Form of clients</span></h1>
+                </div>
+                <div class="card-body p-4">
+                	<div th:object="${client}" th:remove="tag">
+                		<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                			<li th:each="error: ${#fields.errors('*')}"  th:text="${error}"></li>
+                		</ul>
+                	</div>
+                    <form th:action="@{/form}" th:object="${client}" method="post">
+                        <!-- ID HIDDEN (para edición) -->
+                        <input type="hidden" th:field="*{id}" />
+                        
+                        <div class="row g-3">
+                            <!-- NAME -->
+                            <div class="col-md-6">
+                                <label for="name" class="form-label fw-bold">Name <span class="text-danger">*</span></label>
+                                <input type="text" 
+                                       th:field="*{name}" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="Enter first name"
+                                       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+                                <small th:if="${#fields.hasErrors('name')}" 
+                                     th:errors="*{name}" 
+                                     class="invalid-feedback fw-bold">
+                                </small>
+                            </div>
+                            
+                            <!-- LAST NAME -->
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label fw-bold">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" 
+                                       th:field="*{lastName}" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="Enter last name"
+                                       th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''">
+                                <small th:if="${#fields.hasErrors('lastName')}" 
+                                     th:errors="*{lastName}" 
+                                     class="invalid-feedback fw-bold">
+                                </small>
+                            </div>
+                            
+                            <!-- EMAIL -->
+                            <div class="col-12">
+                                <label for="email" class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                                <input type="email" 
+                                       th:field="*{email}" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="name@example.com"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                                <small th:if="${#fields.hasErrors('email')}" 
+                                     th:errors="*{email}" 
+                                     class="invalid-feedback fw-bold">
+                                </small>
+                            </div>
+                            
+                            <!-- CREATED AT -->
+                            <div class="col-12">
+                                <label for="createdAt" class="form-label fw-bold">Registration Date <span class="text-danger">*</span></label>
+                                <input type="date" 
+                                       th:field="*{createdAt}" 
+                                       class="form-control form-control-lg" 
+                                       th:classappend="${#fields.hasErrors('createdAt')} ? 'is-invalid' : ''">
+                                <small th:if="${#fields.hasErrors('createdAt')}" 
+                                     th:errors="*{createdAt}" 
+                                     class="invalid-feedback fw-bold mt-1">
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                            <a th:href="@{/list}" class="btn btn-outline-secondary btn-lg px-5">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                                <i class="bi bi-check-circle"></i> Save Client
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
