@@ -121,7 +121,7 @@ public class FormController {
 		User user = new User();
 		user.setName("Jhon");
 		user.setLastName("Doe");
-		user.setIdentifier("123.456.789-K");
+		user.setIdentifier("12.456.789-K");
 		user.setIsActive(true);
 		user.setSecretValue("my secret value");
 		user.setCountry(new Country(2, "ME", "Mexico"));
@@ -129,6 +129,7 @@ public class FormController {
 				new Role(2, "User", "ROLE_USER"),
 				new Role(3, "Moderator", "ROLE_MODERATOR"))
 		);
+		user.setAccount(10);
 		
 		model.addAttribute("title", "User form");
 		model.addAttribute("user", user);

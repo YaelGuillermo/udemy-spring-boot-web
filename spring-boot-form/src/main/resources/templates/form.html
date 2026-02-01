@@ -5,6 +5,7 @@
 <title th:text="${title}"></title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
+<section th:replace="components/time :: interceptor"></section>
 <body>
     <div class="container mt-4">
         <h3 th:text="${title}"></h3>
