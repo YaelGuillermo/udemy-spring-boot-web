@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        pageTitle=${title}, 
+        content=~{::section},
+        pageScripts=null
+      )}">
+<head></head>
+<body>
+<section>
+    <div class="container py-5">
+        <!-- Botón de regreso -->
+        <div class="mb-4">
+            <a th:href="@{/list}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+        
+        <!-- Card principal -->
+        <div class="card shadow-sm">
+            <!-- Header -->
+            <div class="card-header bg-primary text-white py-3">
+                <h2 class="h4 mb-0">
+                    <i class="bi bi-person-circle me-2"></i>Client Details
+                </h2>
+            </div>
+            
+            <!-- Contenido -->
+            <div class="card-body p-4">
+                <div class="row">
+                    <!-- Foto del cliente -->
+                    <div class="col-md-4 text-center mb-4 mb-md-0">
+                        <div class="mb-3">
+                            <div th:if="${client.photo != null and !#strings.isEmpty(client.photo)}">
+                                <img th:src="@{'/uploads/' + ${client.photo}}" 
+                                     alt="Client Photo"
+                                     class="img-fluid rounded shadow"
+                                     style="max-width: 250px; max-height: 250px; object-fit: cover;">
+                            </div>
+                            <div th:unless="${client.photo != null and !#strings.isEmpty(client.photo)}">
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto"
+                                     style="width: 200px; height: 200px; border: 2px dashed #dee2e6;">
+                                    <i class="bi bi-person text-muted" style="font-size: 4rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="h5 fw-bold" th:text="${client.name + ' ' + client.lastName}"></h3>
+                        <p class="text-muted small">Client ID: <span th:text="${client.id}"></span></p>
+                    </div>
+                    
+                    <!-- Información del cliente -->
+                    <div class="col-md-8">
+                        <div class="row">
+                            <!-- Nombre -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-0 bg-light h-100">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">First Name</p>
+                                        <p class="h5 mb-0 fw-bold" th:text="${client.name}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Apellido -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-0 bg-light h-100">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">Last Name</p>
+                                        <p class="h5 mb-0 fw-bold" th:text="${client.lastName}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-12 mb-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">Email Address</p>
+                                        <p class="h5 mb-0">
+                                            <a th:href="'mailto:' + ${client.email}" 
+                                               class="text-decoration-none"
+                                               th:text="${client.email}"></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Fecha de registro -->
+                            <div class="col-12 mb-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-1">Registration Date</p>
+                                        <p class="h5 mb-0 fw-bold" th:text="${#dates.format(client.createdAt, 'dd MMMM yyyy')}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table>
+           <!-- ✅ Invoices -->
+<div class="px-4 pb-4">
+  <div class="card border-0 shadow-sm mt-4">
+    <div class="card-header bg-white py-3 border-bottom">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-0 fw-bold">
+            <i class="bi bi-receipt me-2 text-primary"></i>
+            Client Invoices
+          </h5>
+          <small class="text-muted">Manage invoices for this client</small>
+        </div>
+
+        <a th:href="@{/invoice/form/} + ${client.id}" class="btn btn-sm btn-primary">
+          <i class="bi bi-plus-circle me-2"></i>New Invoice
+        </a>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="px-4 py-3 text-uppercase text-muted small" style="width: 10%;">ID</th>
+              <th class="px-4 py-3 text-uppercase text-muted small" style="width: 45%;">Description</th>
+              <th class="px-4 py-3 text-uppercase text-muted small text-center" style="width: 18%;">Date</th>
+              <th class="px-4 py-3 text-uppercase text-muted small text-end" style="width: 15%;">Total</th>
+              <th class="px-4 py-3 text-uppercase text-muted small text-end" style="width: 12%;">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr th:each="invoice, iterStat : ${client.invoices}">
+              <td class="px-4 py-3">
+                <span class="badge rounded-pill text-bg-primary"
+                      th:text="${invoice.id}">1</span>
+              </td>
+
+              <td class="px-4 py-3">
+                <div class="fw-semibold text-dark" th:text="${invoice.description}">Description</div>
+                <div class="text-muted small">
+                  Invoice #
+                  <span th:text="${invoice.id}"></span>
+                </div>
+              </td>
+
+              <td class="px-4 py-3 text-center text-muted">
+                <i class="bi bi-calendar3 me-2"></i>
+                <span th:text="${#dates.format(invoice.createdAt, 'dd MMM yyyy')}"></span>
+              </td>
+
+              <td class="px-4 py-3 text-end">
+                <span class="fw-bold text-primary">
+                  $<span th:text="${#numbers.formatDecimal(invoice.total, 1, 2)}">0.00</span>
+                </span>
+              </td>
+
+              <td class="px-4 py-3">
+                <div class="d-flex justify-content-end gap-2">
+                  <a class="btn btn-sm btn-outline-primary"
+                     th:href="@{/invoice/view/} + ${invoice.id}">
+                    <i class="bi bi-eye me-1"></i>View
+                  </a>
+                  <a class="btn btn-sm btn-outline-danger"
+                     th:href="@{/invoice/delete/} + ${invoice.id}"
+                     onclick="return confirm('Are you sure you want to delete?');">
+                    <i class="bi bi-trash"></i>Delete
+                  </a>
+                </div>
+              </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(client.invoices)}">
+              <td colspan="5" class="text-center px-4 py-5">
+                <div class="d-flex flex-column align-items-center">
+                  <i class="bi bi-receipt text-muted" style="font-size: 3rem;"></i>
+                  <p class="mt-2 mb-0 text-muted fw-semibold">No invoices yet</p>
+                  <p class="small text-muted mb-3">Create the first invoice for this client.</p>
+                  <a th:href="@{/invoice/form/} + ${client.id}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-2"></i>Create Invoice
+                  </a>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
+      <small class="text-muted">
+        Total invoices:
+        <span class="fw-semibold" th:text="${#lists.size(client.invoices)}">0</span>
+      </small>
+
+      <small class="text-muted">
+        Tip: Use “View” to see invoice details.
+      </small>
+    </div>
+  </div>
+</div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Estilos simples -->
+<style>
+    .card {
+        border-radius: 10px;
+    }
+    
+    .card-body .card {
+        transition: background-color 0.2s;
+    }
+    
+    .card-body .card:hover {
+        background-color: #f8f9fa;
+    }
+    
+    img {
+        transition: transform 0.3s;
+    }
+    
+    img:hover {
+        transform: scale(1.02);
+    }
+</style>
+</body>
+</html>

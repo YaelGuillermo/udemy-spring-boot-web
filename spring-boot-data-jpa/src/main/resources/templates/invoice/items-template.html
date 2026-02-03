@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<table th:fragment="invoiceItems" class="d-none">
+  <tbody id="invoiceItemsTemplate">
+    <tr id="row_{ID}" data-id="{ID}">
+      <td class="d-none">
+        <input type="hidden" value="{ID}" name="item_id[]"/>
+      </td>
+
+      <td class="fw-semibold">{NAME}</td>
+
+      <td>
+        <span class="text-muted">$</span>
+        <span class="item-price" data-price="{PRICE}">{PRICE}</span>
+      </td>
+
+      <td>
+        <input type="number"
+               value="1"
+               min="1"
+               name="quantity[]"
+               id="quantity_{ID}"
+               class="form-control form-control-sm item-qty"
+               style="max-width: 110px;" />
+      </td>
+
+      <td>
+        <span class="text-muted">$</span>
+        <span class="item-subtotal">0.00</span>
+      </td>
+
+      <td class="text-end">
+        <button type="button"
+                class="btn btn-outline-danger btn-sm btn-remove-item"
+                data-row="row_{ID}">
+          <i class="bi bi-trash"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<script type="text/javascript" th:fragment="javascript">
+  $(function () {
+
+    function formatMoney(n) {
+      n = Number(n || 0);
+      return n.toFixed(2);
+    }
+
+    function recalcAll() {
+    	  let total = 0;
+
+    	  $("#loadProductItems tbody tr").each(function () {
+    	    const price = Number($(this).find(".item-price").data("price") || 0);
+    	    const qty = Number($(this).find(".item-qty").val() || 0);
+
+    	    const subtotal = price * qty;
+    	    total += subtotal;
+
+    	    // ✅ pintar subtotal por fila
+    	    $(this).find(".item-subtotal").text(formatMoney(subtotal));
+    	  });
+
+    	  $("#invoiceTotal").text("$" + formatMoney(total));
+    	}
+
+    // eliminar fila
+    $(document).on("click", ".btn-remove-item", function () {
+      const rowId = $(this).data("row");
+      $("#" + rowId).remove();
+      recalcAll();
+    });
+
+    // recalcular al cambiar cantidad
+    $(document).on("input", ".item-qty", function () {
+    	recalcAll();
+    });
+
+    $("#search_product").autocomplete({
+      minLength: 1,
+      source: function (request, response) {
+        $.ajax({
+          url: "/invoice/load-products/" + encodeURIComponent(request.term),
+          dataType: "json",
+          success: function (data) {
+            response($.map(data, function (item) {
+              return {
+                label: item.name,
+                value: item.name,
+                id: item.id,
+                price: item.price
+              };
+            }));
+          },
+          error: function (xhr) {
+            console.error("Autocomplete failed:", xhr.status, xhr.responseText);
+          }
+        });
+      },
+      select: function (event, ui) {
+
+        // ✅ usa el ID real, no el nombre
+        const id = ui.item.id;
+
+        // ✅ evita duplicados
+        if ($("#row_" + id).length) {
+          $("#quantity_" + id).focus();
+          $("#search_product").val("");
+          return false;
+        }
+
+        // clonar template
+        let line = $("#invoiceItemsTemplate").html();
+
+        // ✅ reemplazos correctos
+        line = line.replace(/{ID}/g, id);
+        line = line.replace(/{NAME}/g, ui.item.label);
+        line = line.replace(/{PRICE}/g, ui.item.price);
+
+        // ✅ importante: debe existir tbody en la tabla visible
+        $("#loadProductItems tbody").append(line);
+
+        // limpiar input búsqueda
+        $("#search_product").val("");
+
+        recalcAll();
+        return false;
+      }
+    });
+    
+    $("form").submit(function(){
+    	$("#invoiceItemsTemplate").remove();
+    	return;
+    });
+
+  });
+</script>
+
+</body>
+</html>

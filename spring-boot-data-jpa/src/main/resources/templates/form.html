@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(pageTitle=${title}, content=~{::section})}">
+      th:replace="~{layout :: layout(
+        pageTitle=${title}, 
+        content=~{::section},
+        pageScripts=null
+      )}">
 <head></head>
 <body>
 <section>
@@ -16,9 +20,10 @@
                 			<li th:each="error: ${#fields.errors('*')}"  th:text="${error}"></li>
                 		</ul>
                 	</div>
-                    <form th:action="@{/form}" th:object="${client}" method="post">
+                    <form th:action="@{/form}" th:object="${client}" method="post" enctype="multipart/form-data">
                         <!-- ID HIDDEN (para edición) -->
                         <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" th:field="*{photo}" />
                         
                         <div class="row g-3">
                             <!-- NAME -->
@@ -62,6 +67,26 @@
                                      class="invalid-feedback fw-bold">
                                 </small>
                             </div>
+                            
+                            <!-- PHOTO -->
+                            <div class="col-12">
+							  <label for="photo" class="form-label fw-bold">Photo</label>
+							  <input type="file"
+							       id="photoFile"
+							       name="photoFile"
+							       class="form-control form-control-lg">
+							  <div class="mt-2" th:if="${client.photo != null and !#strings.isEmpty(client.photo)}">
+								  <span class="text-muted">Current:</span>
+								  <span th:text="${client.photo}"></span>
+								
+								  <div class="form-check mt-2">
+								    <input class="form-check-input" type="checkbox" id="removePhoto" name="removePhoto" value="true">
+								    <label class="form-check-label" for="removePhoto">
+								      Remove current photo ❌
+								    </label>
+								  </div>
+								</div>							  
+							</div>
                             
                             <!-- CREATED AT -->
                             <div class="col-12">

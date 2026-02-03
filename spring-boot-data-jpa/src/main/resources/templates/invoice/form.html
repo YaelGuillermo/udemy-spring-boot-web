@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout :: layout(
+    pageTitle=${title},
+    content=~{::section},
+    pageScripts=~{invoice/js/autocomplete-products :: javascript}
+  )}">
+<head></head>
+<body>
+<section>
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-lg">
+        <div class="card-header py-4">
+          <h1 class="h3 mb-0 fw-bold">
+            <i class="bi bi-person-plus"></i> <span th:text="${title}">Form of invoices</span>
+          </h1>
+        </div>
+
+        <div class="card-body p-4">
+           
+          <div th:object="${invoice}" th:remove="tag">
+            <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+              <li th:each="error: ${#fields.errors('*')}" th:text="${error}"></li>
+            </ul>
+          </div>
+
+          <form th:action="@{/invoice/form}" th:object="${invoice}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="mb-4">
+              <label class="form-label fw-bold">Client <span class="text-danger">*</span></label>
+              <input type="text"
+                     th:value="|${invoice.client.name} ${invoice.client.lastName}|"
+                     class="form-control form-control-lg"
+                     disabled="disabled">
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label fw-bold">Description <span class="text-danger">*</span></label>
+              <input type="text" th:field="*{description}"
+                     class="form-control form-control-lg"
+                     placeholder="Type description"
+                     th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''">
+              <small th:if="${#fields.hasErrors('description')}"
+                     th:errors="*{description}"
+                     class="invalid-feedback fw-bold"></small>
+            </div>
+
+            <div class="mb-4">
+              <label for="observation" class="form-label fw-bold">Observation</label>
+              <textarea th:field="*{observation}"
+                        class="form-control form-control-lg"
+                        placeholder="Type observation"
+                        rows="3"
+                        th:classappend="${#fields.hasErrors('observation')} ? 'is-invalid' : ''"></textarea>
+              <small th:if="${#fields.hasErrors('observation')}"
+                     th:errors="*{observation}"
+                     class="invalid-feedback fw-bold"></small>
+            </div>
+
+            <div class="mb-4">
+              <label for="search_product" class="form-label fw-bold">Search Product <span class="text-danger">*</span></label>
+              <input type="text" name="search_product" id="search_product"
+                     class="form-control form-control-lg"
+                     placeholder="Search by name">
+            </div>
+            
+            <!-- TEMPLATE OCULTO (se usa para clonar filas) -->
+<table th:replace="~{invoice/items-template :: invoiceItems}"></table>
+
+<!-- TABLA VISIBLE -->
+<div class="card border-0 shadow-sm mt-4">
+  <div class="card-header bg-light d-flex justify-content-between align-items-center">
+    <span class="fw-bold"><i class="bi bi-cart3"></i> Products</span>
+    <small class="text-muted">Add items from the search box</small>
+  </div>
+
+  <div class="table-responsive">
+    <table id="loadProductItems" class="table table-hover table-striped mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+    <th style="width: 40%;">Name</th>
+    <th style="width: 15%;">Price</th>
+    <th style="width: 15%;">Quantity</th>
+    <th style="width: 15%;">Subtotal</th>
+    <th style="width: 15%;" class="text-end">Actions</th>
+  </tr>
+      </thead>
+      <tbody>
+        <!-- aquí se insertan las filas -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer d-flex justify-content-end gap-3">
+    <span class="fw-bold">Total:</span>
+    <span id="invoiceTotal" class="fw-bold">$0.00</span>
+  </div>
+</div>
+            
+
+            <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+              <a th:href="@{/view/} + ${invoice.client.id}"
+                 class="btn btn-outline-secondary btn-lg px-5">
+                <i class="bi bi-arrow-left"></i> Cancel
+              </a>
+              <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                <i class="bi bi-check-circle"></i> Save Invoice
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

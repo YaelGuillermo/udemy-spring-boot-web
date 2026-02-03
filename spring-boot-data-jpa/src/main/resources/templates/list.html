@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(pageTitle=${title}, content=~{::section})}">
+  th:replace="~{layout :: layout(
+    pageTitle=${title},
+    content=~{::section},
+    pageScripts=${null}
+  )}">
 <head></head>
 <body>
 <section>
@@ -28,6 +32,8 @@
                             <th class="px-4 py-3">Last Name</th>
                             <th class="px-4 py-3">Email</th>
                             <th class="px-4 py-3">Registered</th>
+                            <th class="px-4 py-3">View</th>
+                            <th class="px-4 py-3">Create Invoice</th>
                             <th class="px-4 py-3">Update</th>
                             <th class="px-4 py-3">Delete</th>
                         </tr>
@@ -40,6 +46,14 @@
                             <td class="px-4 py-3" th:text="${client.lastName}"></td>
                             <td class="px-4 py-3" th:text="${client.email}"></td>
                             <td class="px-4 py-3" th:text="${client.createdAt}"></td>
+                            <td class="px-4 py-3">
+                            	<a class="btn btn-info btn-xs" th:href="@{/view/} + ${client.id}" th:text="'View'">
+                            	</a>
+                            </td>
+                            <td class="px-4 py-3">
+                            	<a class="btn btn-success btn-xs" th:href="@{/invoice/form/} + ${client.id}" th:text="'Create Invoice'">
+                            	</a>
+                            </td>
                             <td class="px-4 py-3">
                             	<a class="btn btn-primary btn-xs" th:href="@{/form/} + ${client.id}" th:text="'Update'">
                             	</a>
