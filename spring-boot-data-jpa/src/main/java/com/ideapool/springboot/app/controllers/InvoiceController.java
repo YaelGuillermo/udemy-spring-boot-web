@@ -67,7 +67,7 @@ public class InvoiceController {
 			@PathVariable(value="id") Long id,
 			Model model,
 			RedirectAttributes flash) {
-		Invoice invoice = clientService.findInvoiceById(id);
+		Invoice invoice = clientService.findInvoiceByIdWithItems(id);
 		if (invoice == null) {
             flash.addFlashAttribute("error", "Invoice id does not exist!");
             return "redirect:/list";

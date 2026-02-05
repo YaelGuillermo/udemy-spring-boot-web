@@ -15,5 +15,6 @@ public interface IInvoiceDao extends JpaRepository<Invoice, Long>{
 	    left join fetch it.product
 	    where i.id = :id
 	  """)
-	  Invoice fetchByIdWithItems(@Param("id") Long id);
+	  public Invoice fetchByIdWithItems(@Param("id") Long id);
+	  
 	}
