@@ -34,24 +34,6 @@ Through this project, I practiced and reinforced:
 - Integration of Thymeleaf with backend logic
 - Organizing a maintainable Java project
 
-## 📁 Project Structure
-
-```
-
-src/
-└── main/
-├── java/
-│   └── com/example/spreader/
-│       ├── controller/
-│       ├── service/
-│       └── SpreaderApplication.java
-└── resources/
-├── templates/
-├── static/
-└── application.properties
-
-````
-
 ## ▶️ How to Run the Application
 
 1. Clone the repository  
