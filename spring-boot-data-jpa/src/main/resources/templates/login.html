@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        pageTitle='Login',
+        content=~{::section},
+        pageScripts=null
+      )}">
+<head></head>
+<body>
+<section>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg mt-5">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2 class="h4 mb-0">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </h2>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div th:if="${param.error}" class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> Invalid username or password
+                    </div>
+                    
+                    <div th:if="${param.logout}" class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> You have been logged out
+                    </div>
+                    
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label fw-bold">Username</label>
+                            <input type="text" 
+                                   id="username" 
+                                   name="username" 
+                                   class="form-control form-control-lg"
+                                   placeholder="Enter your username"
+                                   autofocus>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-bold">Password</label>
+                            <input type="password" 
+                                   id="password" 
+                                   name="password" 
+                                   class="form-control form-control-lg"
+                                   placeholder="Enter your password">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
