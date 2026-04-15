@@ -1,7 +1,10 @@
 package com.ideapool.springboot.app.controllers;
 
+import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
@@ -10,6 +13,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,12 +38,15 @@ import com.ideapool.springboot.app.models.service.IClientService;
 import com.ideapool.springboot.app.models.service.IUploadFileService;
 import com.ideapool.springboot.app.util.paginator.PageRender;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
 @SessionAttributes("client")
 public class ClientController {
 
+	protected final Log logger = LogFactory.getLog(this.getClass());
+	
     @Autowired
     @Qualifier("clientServiceJPA")
     private IClientService clientService;
@@ -41,7 +55,38 @@ public class ClientController {
     private IUploadFileService uploadService;
 
     @RequestMapping(value="/list", method=RequestMethod.GET)
-    public String list(@RequestParam(name="page", defaultValue="0") int page, Model model) {
+    public String list(@RequestParam(name="page", defaultValue="0") int page, Model model, Authentication authentication, HttpServletRequest request) {
+    	
+    	if (authentication != null) {
+    		logger.info("Hello authenticated user, your username is ".concat(authentication.getName()));
+    	}
+    	
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	
+    	if (auth != null) {
+    		logger.info("Using static form SecurityContextHolder.getContext().getAuthentication(): Authenticated user, username: ".concat(auth.getName()));
+    	}
+    	
+    	if(hasRole("ROLE_ADMIN")) {
+    		logger.info("Hello ".concat(auth.getName().concat(" you have access!")));
+    	} else {
+    		logger.info("Hello ".concat(auth.getName().concat(" you do not have access!")));
+    	}
+    	
+    	SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request, "ROLE_");
+    	
+    	if (securityContext.isUserInRole("ADMIN")) {
+    		logger.info("Using form SecurityContextHolderAwareRequestWrapper: Hello ".concat(auth.getName().concat(" you have access!")));
+    	} else {
+    		logger.info("Using form SecurityContextHolderAwareRequestWrapper: Hello ".concat(auth.getName().concat(" you do not have access!")));
+    	}
+    	
+    	if (request.isUserInRole("ROLE_ADMIN")) {
+    		logger.info("Using form HttpServletRequest: Hello ".concat(auth.getName().concat(" you have access!")));
+    	} else {
+    		logger.info("Using form HttpServletRequest: Hello ".concat(auth.getName().concat(" you do not have access!")));
+    	}
+    	
         Pageable pageRequest = PageRequest.of(page, 5);
         Page<Client> clients = clientService.findAll(pageRequest);
 
@@ -53,6 +98,7 @@ public class ClientController {
         return "list";
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value="/view/{id}")
     public String view(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
         Client client = clientService.fetchByIdWithInvoices(id);
@@ -66,6 +112,8 @@ public class ClientController {
         return "view";
     }
 
+    
+    @Secured({"ROLE_USER"})
     @RequestMapping(value="/uploads/{filename:.+}")
     public ResponseEntity<Resource> viewPhoto(@PathVariable String filename) {
         Resource resource = uploadService.load(filename);
@@ -75,6 +123,7 @@ public class ClientController {
             .body(resource);
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value="/form")
     public String create(Map<String, Object> model) {
         Client client = new Client();
@@ -83,6 +132,7 @@ public class ClientController {
         return "form";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/form/{id}")
     public String edit(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
         if (id <= 0) {
@@ -101,6 +151,7 @@ public class ClientController {
         return "form";
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value="/form", method=RequestMethod.POST)
     public String save(
         @Valid Client client,
@@ -143,6 +194,7 @@ public class ClientController {
         return "redirect:/list";
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping(value="/delete/{id}")
     public String delete(@PathVariable(value="id") Long id, RedirectAttributes flash) {
         if (id > 0) {
@@ -156,4 +208,18 @@ public class ClientController {
         return "redirect:/list";
     }
     
+    private boolean hasRole(String role) {
+    	SecurityContext context = SecurityContextHolder.getContext();
+    	if (context == null)
+    		return false;
+    	
+    	Authentication auth = context.getAuthentication();
+    	
+    	if (auth == null)
+    		return false;
+    	
+    	Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+    	
+    	return authorities.contains(new SimpleGrantedAuthority(role));
+    }
 }
