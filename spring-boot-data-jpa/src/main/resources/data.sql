@@ -1,3 +1,16 @@
+-- Primero insertar los usuarios
+INSERT INTO users (username, password, enabled) 
+VALUES 
+('yael', '$2a$10$4RdZo2utzYXzt5wVRFoYgO0jVOu59L2PjsKrv3L6TXESOrzA4rg.m', 1),
+('jhon', '$2a$10$OyTTShX0bYBiy24cKZ9YqeNniauK/fjdtsD73TC5IFd9ypGd9eS0K', 1);
+
+-- Luego insertar las autoridades (roles)
+INSERT INTO authorities (user_id, authority) 
+VALUES 
+(1, 'ROLE_USER'),
+(1, 'ROLE_ADMIN'),
+(2, 'ROLE_USER');
+
 -- Insertar 1 cliente
 INSERT INTO clients (name, last_name, email, created_at, photo)
 VALUES 
